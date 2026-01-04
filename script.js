@@ -35,10 +35,10 @@ function loadCategoryImages() {
     // قائمة بأسماء الصور في كل قسم (يمكنك إضافة المزيد)
     // في الحقيقة، يجب أن تكون الصور موجودة في مجلد images/{category}/
     const imageFiles = {
-        'girl': ['girl1.jpg', 'girl2.jpg', 'girl3.jpg', 'girl4.jpg', 'girl5.jpg', 'girl6.jpg', 'girl7.jpg', 'girl8.jpg', 'girl9.jpg', 'girl10.jpg'],
-        'Lesbian': ['les1.jpg', 'les2.jpg', 'les3.jpg', 'les4.jpg', 'les5.jpg', 'les6.jpg', 'les7.jpg', 'les8.jpg', 'les9.jpg', 'les10.jpg'],
-        'mother': ['mother1.jpg', 'mother2.jpg', 'mother3.jpg', 'mother4.jpg', 'mother5.jpg', 'mother6.jpg', 'mother7.jpg', 'mother8.jpg', 'mother9.jpg', 'mother10.jpg'],
-        'clothe': ['clothe1.jpg', 'clothe2.jpg', 'clothe3.jpg', 'clothe4.jpg', 'clothe5.jpg', 'clothe6.jpg', 'clothe7.jpg', 'clothe8.jpg', 'clothe9.jpg', 'clothe10.jpg']
+        'girl': ['girl1.jpg', 'girl2.jpg', 'girl3.jpg', 'girl4.jpg', 'girl5.jpg', 'girl6.jpg', 'girl7.jpg', 'girl8.jpg', 'girl9.jpg', 'girl10.jpg', 'girl11.jpg', 'girl12.jpg', 'girl13.jpg', 'girl14.jpg', 'girl15.jpg', 'girl16.jpg', 'girl17.jpg',],
+        'Lesbian': ['les1.jpg', 'les2.jpg', 'les3.jpg', 'les4.jpg', 'les5.jpg', 'les6.jpg', 'les7.jpg', 'les8.jpg', 'les9.jpg', 'les10.jpg', 'les11.jpg', 'les12.jpg', 'les13.jpg', 'les14.jpg', 'les15.jpg', 'les16.jpg',],
+        'mother': ['mother1.jpg', 'mother2.jpg', 'mother3.jpg', 'mother4.jpg', 'mother5.jpg', 'mother6.jpg', 'mother7.jpg', 'mother8.jpg', 'mother9.jpg', 'mother10.jpg', 'mother11.jpg', 'mother12.jpg', 'mother13.jpg', 'mother14.jpg'],
+        'clothe': ['clothe1.jpg', 'clothe2.jpg', 'clothe3.jpg', 'clothe4.jpg', 'clothe5.jpg', 'clothe6.jpg', 'clothe7.jpg', 'clothe8.jpg', 'clothe9.jpg', 'clothe10.jpg', 'clothe11.jpg', 'clothe12.jpg', 'clothe13.jpg', 'clothe14.jpg', 'clothe15.jpg'],
     };
     
     const imagesContainer = document.getElementById('images-container');
