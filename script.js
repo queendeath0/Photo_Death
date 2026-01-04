@@ -35,10 +35,10 @@ function loadCategoryImages() {
     // قائمة بأسماء الصور في كل قسم (يمكنك إضافة المزيد)
     // في الحقيقة، يجب أن تكون الصور موجودة في مجلد images/{category}/
     const imageFiles = {
-        'girl': ['girl1.jpg', 'girl2.jpg', 'girl3.jpg', 'girl4.jpg', 'girl5.jpg', 'girl6.jpg', 'girl7.jpg', 'girl8.jpg', 'girl9.jpg', 'girl10.jpg', 'girl11.jpg', 'girl12.jpg', 'girl13.jpg', 'girl14.jpg', 'girl15.jpg', 'girl16.jpg', 'girl17.jpg',],
-        'Lesbian': ['les1.jpg', 'les2.jpg', 'les3.jpg', 'les4.jpg', 'les5.jpg', 'les6.jpg', 'les7.jpg', 'les8.jpg', 'les9.jpg', 'les10.jpg', 'les11.jpg', 'les12.jpg', 'les13.jpg', 'les14.jpg', 'les15.jpg', 'les16.jpg',],
-        'mother': ['mother1.jpg', 'mother2.jpg', 'mother3.jpg', 'mother4.jpg', 'mother5.jpg', 'mother6.jpg', 'mother7.jpg', 'mother8.jpg', 'mother9.jpg', 'mother10.jpg', 'mother11.jpg', 'mother12.jpg', 'mother13.jpg', 'mother14.jpg'],
-        'clothe': ['clothe1.jpg', 'clothe2.jpg', 'clothe3.jpg', 'clothe4.jpg', 'clothe5.jpg', 'clothe6.jpg', 'clothe7.jpg', 'clothe8.jpg', 'clothe9.jpg', 'clothe10.jpg', 'clothe11.jpg', 'clothe12.jpg', 'clothe13.jpg', 'clothe14.jpg', 'clothe15.jpg'],
+        'girl': ['g1.jpg', 'g2.jpg', 'g3.jpg', 'g4.jpg', 'g5.jpg', 'g6.jpg', 'g7.jpg', 'g8.jpg', 'g9.jpg', 'g10.jpg', 'g11.jpg', 'g12.jpg', 'g13.jpg', 'g14.jpg', 'g15.jpg', 'g16.jpg', 'g17.jpg'],
+        'Lesbian': ['l1.jpg', 'l2.jpg', 'l3.jpg', 'l4.jpg', 'l5.jpg', 'l6.jpg', 'l7.jpg', 'l8.jpg', 'l9.jpg', 'l10.jpg', 'l11.jpg', 'l12.jpg', 'l13.jpg', 'l14.jpg', 'l15.jpg', 'l16.jpg'],
+        'mother': ['m1.jpg', 'm2.jpg', 'm3.jpg', 'm4.jpg', 'm5.jpg', 'm6.jpg', 'm7.jpg', 'm8.jpg', 'm9.jpg', 'm10.jpg', 'm11.jpg', 'm12.jpg', 'm13.jpg', 'm14.jpg'],
+        'clothe': ['c1.jpg', 'c2.jpg', 'c3.jpg', 'c4.jpg', 'c5.jpg', 'c6.jpg', 'c7.jpg', 'c8.jpg', 'c9.jpg', 'c10.jpg', 'c11.jpg', 'c12.jpg', 'c13.jpg', 'c14.jpg', 'c15.jpg',],
     };
     
     const imagesContainer = document.getElementById('images-container');
