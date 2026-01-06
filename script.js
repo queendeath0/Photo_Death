@@ -3,7 +3,15 @@ const categoryNames = {
     'clothe': 'ملابس',
     'girl': 'بنات', 
     'mother': 'أمهات',
-    'Lesbian': 'مثليات'
+    'Lesbian': 'سحاقيات'
+};
+
+// تخمين أسماء الصور بناءً على محتوى المجلدات
+const imagePatterns = {
+    'girl': 'g',
+    'Lesbian': 'l', 
+    'mother': 'm',
+    'clothe': 'c'
 };
 
 // عند تحميل الصفحة
@@ -31,156 +39,127 @@ function loadCategoryImages() {
         categoryTitle.innerHTML = `<i class="fas fa-images"></i> ${categoryNames[category] || category}`;
     }
     
-    // قائمة الصور الثابتة (للاحتياط إذا لم تعمل القراءة الديناميكية)
-    const fallbackImages = {
-        'girl': ['g1.jpg', 'g2.jpg', 'g3.jpg', 'g4.jpg', 'g5.jpg', 'g6.jpg', 'g7.jpg', 'g8.jpg', 'g9.jpg', 'g10.jpg', 'g11.jpg', 'g12.jpg', 'g13.jpg', 'g14.jpg', 'g15.jpg', 'g16.jpg', 'g17.jpg', 'g18.jpg', 'g19.jpg', 'g20.jpg', 'g21.jpg', 'g22.jpg', 'g23.jpg', 'g24.jpg', 'g25.jpg', 'g26.jpg', 'g27.jpg'],
-        'Lesbian': ['l1.jpg', 'l2.jpg', 'l3.jpg', 'l4.jpg', 'l5.jpg', 'l6.jpg', 'l7.jpg', 'l8.jpg', 'l9.jpg', 'l10.jpg', 'l11.jpg', 'l12.jpg', 'l13.jpg', 'l14.jpg', 'l15.jpg', 'l16.jpg', 'l17.jpg', 'l18.jpg', 'l19.jpg', 'l20.jpg', 'l21.jpg', 'l22.jpg', 'l23.jpg', 'l24.jpg', 'l25.jpg', 'l26.jpg', 'l27.jpg', 'l28.jpg'],
-        'mother': ['m1.jpg', 'm2.jpg', 'm3.jpg', 'm4.jpg', 'm5.jpg', 'm6.jpg', 'm7.jpg', 'm8.jpg', 'm9.jpg', 'm10.jpg', 'm11.jpg', 'm12.jpg', 'm13.jpg', 'm14.jpg', 'm15.jpg', 'm16.jpg', 'm17.jpg', 'm18.jpg', 'm19.jpg', 'm20.jpg', 'm21.jpg', 'm22.jpg', 'm23.jpg', 'm24.jpg', 'm25.jpg', 'm26.jpg', 'm27.jpg', 'm28.jpg'],
-        'clothe': ['c1.jpg', 'c2.jpg', 'c3.jpg', 'c4.jpg', 'c5.jpg', 'c6.jpg', 'c7.jpg', 'c8.jpg', 'c9.jpg', 'c10.jpg', 'c11.jpg', 'c12.jpg', 'c13.jpg', 'c14.jpg', 'c15.jpg', 'c16.jpg', 'c17.jpg', 'c18.jpg', 'c19.jpg', 'c20.jpg', 'c21.jpg', 'c22.jpg', 'c23.jpg', 'c24.jpg', 'c25.jpg'],
-    };
-    
-    const imagesContainer = document.getElementById('images-container');
-    
-    // محاولة قراءة الملفات من المجلدات بشكل ديناميكي
-    loadImagesFromFolder(category, fallbackImages[category] || []);
+    // استخدام دالة جديدة لتحميل الصور
+    loadImagesSmart(category);
 }
 
-// دالة لتحميل الصور من المجلدات
-function loadImagesFromFolder(category, fallbackImages) {
+// دالة ذكية لتحميل الصور
+function loadImagesSmart(category) {
     const imagesContainer = document.getElementById('images-container');
     
-    // محاولة قراءة الملفات من المجلد
-    try {
-        // في بيئة الويب العادية، لا يمكن قراءة محتويات المجلدات مباشرة لأسباب أمنية
-        // لذلك سنستخدم طريقة مختلفة بناءً على البيئة
-        
-        // الطريقة 1: إذا كان لدينا قائمة بجميع الملفات المتاحة
-        const allImages = getAllAvailableImages(category);
-        
-        // الطريقة 2: استخدام الفال باك إذا لم تنجح الطريقة الأولى
-        const imagesToUse = allImages.length > 0 ? allImages : fallbackImages;
-        
-        // إذا لم توجد صور
-        if (imagesToUse.length === 0) {
-            imagesContainer.innerHTML = `
-                <div class="no-images">
-                    <i class="fas fa-image"></i>
-                    <h3>لا توجد صور في هذا القسم</h3>
-                    <p>قم بإضافة صور إلى مجلد ${category}/</p>
-                </div>
-            `;
-            return;
-        }
-        
-        // عرض الصور
-        let html = '<div class="images-grid">';
-        
-        imagesToUse.forEach((image, index) => {
-            // المسار النسبي للصورة - من المجلد المباشر
-            const imagePath = `${category}/${image}`;
+    // محاولة اكتشاف الصور المتاحة
+    detectAvailableImages(category)
+        .then(images => {
+            if (images.length === 0) {
+                // إذا لم نجد أي صور، نعرض رسالة
+                imagesContainer.innerHTML = `
+                    <div class="no-images">
+                        <i class="fas fa-image"></i>
+                        <h3>لا توجد صور في هذا القسم</h3>
+                        <p>الرجاء التأكد من:</p>
+                        <ul style="text-align: right; direction: rtl;">
+                            <li>أن المجلد "${category}" موجود</li>
+                            <li>أن الصور داخل المجلد بتنسيق .jpg</li>
+                            <li>أن الصور لها أسماء صحيحة</li>
+                        </ul>
+                    </div>
+                `;
+                return;
+            }
             
-            html += `
-                <div class="image-item">
-                    <img src="${imagePath}" alt="صورة ${index + 1}" 
-                         onerror="handleImageError(this, '${category}', ${index})">
-                </div>
-            `;
+            displayImages(category, images);
+        })
+        .catch(error => {
+            console.error('خطأ في تحميل الصور:', error);
+            
+            // محاولة استخدام النمط الافتراضي
+            const defaultImages = generateDefaultImageNames(category);
+            displayImages(category, defaultImages, true);
         });
+}
+
+// دالة لاكتشاف الصور المتاحة
+async function detectAvailableImages(category) {
+    const images = [];
+    const prefix = imagePatterns[category] || category.charAt(0).toLowerCase();
+    
+    // نحاول تحميل مجموعة من الصور
+    for (let i = 1; i <= 50; i++) {
+        const imageName = `${prefix}${i}.jpg`;
+        const imagePath = `${category}/${imageName}`;
         
-        html += '</div>';
-        imagesContainer.innerHTML = html;
-        
-        // تحديث عدد الصور
-        const imageCount = document.getElementById('image-count');
-        if (imageCount) {
-            imageCount.textContent = imagesToUse.length;
+        // التحقق مما إذا كانت الصورة موجودة
+        const exists = await checkImageExists(imagePath);
+        if (exists) {
+            images.push(imageName);
+        } else {
+            // إذا لم نجد صورة بعد 5 محاولات فاشلة متتالية، نتوقف
+            if (i > 5 && images.length === 0) {
+                break;
+            }
         }
-        
-    } catch (error) {
-        console.error('خطأ في تحميل الصور:', error);
-        
-        // استخدام الصور الاحتياطية في حالة الخطأ
-        displayFallbackImages(category, fallbackImages);
-    }
-}
-
-// دالة لمعالجة خطأ تحميل الصورة
-function handleImageError(imgElement, category, index) {
-    console.log(`الصورة ${category}/${imgElement.alt} غير موجودة`);
-    
-    // عرض صورة بديلة
-    imgElement.src = 'https://via.placeholder.com/200x200?text=صورة+غير+موجودة';
-    imgElement.style.opacity = '0.7';
-    
-    // إضافة عنوان توضيحي
-    const parentDiv = imgElement.parentElement;
-    const errorText = document.createElement('div');
-    errorText.className = 'image-error';
-    errorText.textContent = 'الصورة غير متوفرة';
-    errorText.style.cssText = `
-        position: absolute;
-        bottom: 5px;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,0.7);
-        color: white;
-        padding: 5px;
-        font-size: 12px;
-        text-align: center;
-    `;
-    parentDiv.style.position = 'relative';
-    parentDiv.appendChild(errorText);
-}
-
-// دالة للحصول على جميع الصور المتاحة (محاكاة)
-function getAllAvailableImages(category) {
-    // في الواقع، لا يمكن قراءة محتويات المجلدات في JavaScript من جانب العميل
-    // لأسباب أمنية. هذه محاكاة للكيفية التي ستعمل بها إذا كان بإمكاننا ذلك.
-    
-    // في بيئة حقيقية، قد تحتاج إلى:
-    // 1. استخدام Node.js في الخادوم لقراءة المجلدات
-    // 2. استخدام API لتقديم قائمة الملفات
-    // 3. استخدام قائمة ثابتة مسبقة الصنع
-    
-    // للتبسيط، سأقوم بإرجاع مصفوفة فارغة لجعل الكود يستخدم الفال باك
-    // أو يمكنك تعديل هذه الدالة لتعيد قائمة الملفات بناءً على بنية مجلداتك
-    
-    // محاكاة: إذا كان المجلد موجوداً، أرجع قائمة افتراضية
-    if (categoryNames.hasOwnProperty(category)) {
-        // هنا يمكنك إضافة منطق لقراءة الملفات فعلياً إذا كنت تستخدم بيئة تدعم ذلك
-        return []; // إرجاع مصفوفة فارغة لاستخدام الفال باك
     }
     
-    return [];
+    return images;
 }
 
-// دالة لعرض الصور الاحتياطية
-function displayFallbackImages(category, fallbackImages) {
+// دالة للتحقق من وجود صورة
+function checkImageExists(url) {
+    return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+        
+        // وقت انتظار قصير
+        setTimeout(() => resolve(false), 500);
+    });
+}
+
+// إنشاء أسماء صور افتراضية
+function generateDefaultImageNames(category) {
+    const prefix = imagePatterns[category] || category.charAt(0).toLowerCase();
+    const images = [];
+    
+    // ننشئ قائمة بأسماء الصور الافتراضية
+    for (let i = 1; i <= 30; i++) {
+        images.push(`${prefix}${i}.jpg`);
+    }
+    
+    return images;
+}
+
+// دالة لعرض الصور
+function displayImages(category, imageNames, isFallback = false) {
     const imagesContainer = document.getElementById('images-container');
+    const imageCount = document.getElementById('image-count');
     
-    // إذا لم توجد صور
-    if (!fallbackImages || fallbackImages.length === 0) {
+    if (imageNames.length === 0) {
         imagesContainer.innerHTML = `
             <div class="no-images">
                 <i class="fas fa-image"></i>
                 <h3>لا توجد صور في هذا القسم</h3>
-                <p>قم بإضافة صور إلى مجلد ${category}/</p>
             </div>
         `;
+        if (imageCount) imageCount.textContent = '0';
         return;
     }
     
-    // عرض الصور من القائمة الاحتياطية
     let html = '<div class="images-grid">';
     
-    fallbackImages.forEach((image, index) => {
-        // المسار النسبي للصورة - من المجلد المباشر
-        const imagePath = `${category}/${image}`;
+    imageNames.forEach((imageName, index) => {
+        const imagePath = `${category}/${imageName}`;
+        const imageNumber = isFallback ? index + 1 : parseInt(imageName.match(/\d+/)?.[0]) || index + 1;
         
         html += `
             <div class="image-item">
-                <img src="${imagePath}" alt="صورة ${index + 1}" 
-                     onerror="this.src='https://via.placeholder.com/200x200?text=صورة+غير+موجودة'">
+                <img 
+                    src="${imagePath}" 
+                    alt="صورة ${category} ${imageNumber}" 
+                    loading="lazy"
+                    onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400/333/fff?text=${category}+${imageNumber}';"
+                >
+                ${isFallback ? `<div class="image-number">${imageNumber}</div>` : ''}
             </div>
         `;
     });
@@ -188,9 +167,48 @@ function displayFallbackImages(category, fallbackImages) {
     html += '</div>';
     imagesContainer.innerHTML = html;
     
-    // تحديث عدد الصور
-    const imageCount = document.getElementById('image-count');
     if (imageCount) {
-        imageCount.textContent = fallbackImages.length;
+        imageCount.textContent = imageNames.length;
+    }
+    
+    // إضافة رسالة إذا كنا نستخدم الصور الافتراضية
+    if (isFallback) {
+        const warning = document.createElement('div');
+        warning.className = 'images-warning';
+        warning.innerHTML = `
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin: 10px 0; border-radius: 5px;">
+                <i class="fas fa-exclamation-triangle"></i>
+                <strong>ملاحظة:</strong> يتم عرض صور افتراضية. تأكد من وجود الصور الحقيقية في مجلد "${category}/"
+            </div>
+        `;
+        imagesContainer.insertBefore(warning, imagesContainer.firstChild);
     }
 }
+
+// إضافة CSS إضافي
+const additionalStyles = `
+    .image-item {
+        position: relative;
+    }
+    
+    .image-number {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(0,0,0,0.7);
+        color: white;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-size: 12px;
+    }
+    
+    .images-warning {
+        text-align: center;
+        direction: rtl;
+    }
+`;
+
+// إضافة الأنماط إلى الصفحة
+const styleSheet = document.createElement("style");
+styleSheet.textContent = additionalStyles;
+document.head.appendChild(styleSheet);
