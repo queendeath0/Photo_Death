@@ -3,7 +3,7 @@ const categoryNames = {
     'clothe': 'ملابس',
     'girl': 'بنات', 
     'mother': 'أمهات',
-    'Lesbian': 'سحاقيات'
+    'Lesbian': 'سحاق'
 };
 
 // تخمين أسماء الصور بناءً على محتوى المجلدات
@@ -211,4 +211,5 @@ const additionalStyles = `
 // إضافة الأنماط إلى الصفحة
 const styleSheet = document.createElement("style");
 styleSheet.textContent = additionalStyles;
+
 document.head.appendChild(styleSheet);
