@@ -1,9 +1,10 @@
 // أسماء الأقسام بالعربية
 const categoryNames = {
-    'clothe': 'ملابس',
-    'girl': 'بنات',
-    'mother': 'أمهات',
-    'Lesbian': 'سحاقيات'
+    'nature': 'الطبيعة',
+    'people': 'الأشخاص', 
+    'animals': 'الحيوانات',
+    'food': 'الطعام',
+    'tech': 'التكنولوجيا'
 };
 
 // عند تحميل الصفحة
@@ -31,7 +32,8 @@ function loadCategoryImages() {
         categoryTitle.innerHTML = `<i class="fas fa-images"></i> ${categoryNames[category] || category}`;
     }
     
-    // قائمة بأسماء الصور في كل قسم - الصور في المجلدات المباشرة
+    // قائمة بأسماء الصور في كل قسم (يمكنك إضافة المزيد)
+    // في الحقيقة، يجب أن تكون الصور موجودة في مجلد images/{category}/
     const imageFiles = {
         'girl': ['g1.jpg', 'g2.jpg', 'g3.jpg', 'g4.jpg', 'g5.jpg', 'g6.jpg', 'g7.jpg', 'g8.jpg', 'g9.jpg', 'g10.jpg', 'g11.jpg', 'g12.jpg', 'g13.jpg', 'g14.jpg', 'g15.jpg', 'g16.jpg', 'g17.jpg', 'g18.jpg', 'g19.jpg', 'g20.jpg', 'g21.jpg', 'g22.jpg', 'g23.jpg', 'g24.jpg', 'g25.jpg', 'g26.jpg', 'g27.jpg'],
         'Lesbian': ['l1.jpg', 'l2.jpg', 'l3.jpg', 'l4.jpg', 'l5.jpg', 'l6.jpg', 'l7.jpg', 'l8.jpg', 'l9.jpg', 'l10.jpg', 'l11.jpg', 'l12.jpg', 'l13.jpg', 'l14.jpg', 'l15.jpg', 'l16.jpg', 'l17.jpg', 'l18.jpg', 'l19.jpg', 'l20.jpg', 'l21.jpg', 'l22.jpg', 'l23.jpg', 'l24.jpg', 'l25.jpg', 'l26.jpg', 'l27.jpg', 'l28.jpg'],
@@ -48,7 +50,7 @@ function loadCategoryImages() {
             <div class="no-images">
                 <i class="fas fa-image"></i>
                 <h3>لا توجد صور في هذا القسم</h3>
-                <p>قم بإضافة صور إلى مجلد ${category}/</p>
+                <p>قم بإضافة صور إلى مجلد images/${category}/</p>
             </div>
         `;
         return;
@@ -58,13 +60,13 @@ function loadCategoryImages() {
     let html = '<div class="images-grid">';
     
     images.forEach((image, index) => {
-        // المسار النسبي للصورة - الآن من المجلد المباشر
-        const imagePath = `${category}/${image}`;
+        // المسار النسبي للصورة
+        const imagePath = `images/${category}/${image}`;
         
         html += `
             <div class="image-item">
                 <img src="${imagePath}" alt="صورة ${index + 1}" 
-                     onerror="handleImageError(this, '${category}', '${image}')">
+                     onerror="this.src='https://via.placeholder.com/200x200?text=صورة+غير+موجودة'">
             </div>
         `;
     });
@@ -77,54 +79,4 @@ function loadCategoryImages() {
     if (imageCount) {
         imageCount.textContent = images.length;
     }
-}
-
-// دالة لمعالجة أخطاء تحميل الصور
-function handleImageError(imgElement, category, imageName) {
-    console.error(`تعذر تحميل الصورة: ${category}/${imageName}`);
-    
-    // عرض صورة بديلة
-    imgElement.src = 'https://via.placeholder.com/300x400/333/fff?text=صورة+غير+موجودة';
-    imgElement.style.opacity = '0.7';
-    
-    // إضافة رسالة خطأ صغيرة
-    const parentDiv = imgElement.parentElement;
-    const errorMsg = document.createElement('div');
-    errorMsg.className = 'image-error';
-    errorMsg.textContent = 'الصورة غير متوفرة';
-    errorMsg.style.cssText = `
-        position: absolute;
-        bottom: 5px;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,0.7);
-        color: white;
-        padding: 3px;
-        font-size: 11px;
-        text-align: center;
-        border-radius: 3px;
-    `;
-    parentDiv.style.position = 'relative';
-    parentDiv.appendChild(errorMsg);
-}
-
-// دالة للتحقق من هيكل المجلدات
-function checkFolderStructure() {
-    console.log('جاري التحقق من هيكل المجلدات...');
-    
-    const folders = ['clothe', 'girl', 'Lesbian', 'mother'];
-    
-    folders.forEach(folder => {
-        console.log(`المجلد: ${folder}`);
-        
-        // تجربة تحميل صورة عشوائية للتحقق
-        const testImg = new Image();
-        testImg.onload = function() {
-            console.log(`  ✓ مجلد ${folder} موجود ويحتوي على صور`);
-        };
-        testImg.onerror = function() {
-            console.log(`  ✗ لا يمكن الوصول إلى صور في مجلد ${folder}`);
-        };
-        testImg.src = `${folder}/test.jpg`;
-    });
 }
