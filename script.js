@@ -1,17 +1,9 @@
 // أسماء الأقسام بالعربية
 const categoryNames = {
     'clothe': 'ملابس',
-    'girl': 'بنات', 
+    'girl': 'بنات',
     'mother': 'أمهات',
-    'Lesbian': 'سحاق'
-};
-
-// تخمين أسماء الصور بناءً على محتوى المجلدات
-const imagePatterns = {
-    'girl': 'g',
-    'Lesbian': 'l', 
-    'mother': 'm',
-    'clothe': 'c'
+    'Lesbian': 'سحاقيات'
 };
 
 // عند تحميل الصفحة
@@ -39,127 +31,40 @@ function loadCategoryImages() {
         categoryTitle.innerHTML = `<i class="fas fa-images"></i> ${categoryNames[category] || category}`;
     }
     
-    // استخدام دالة جديدة لتحميل الصور
-    loadImagesSmart(category);
-}
-
-// دالة ذكية لتحميل الصور
-function loadImagesSmart(category) {
+    // قائمة بأسماء الصور في كل قسم - الصور في المجلدات المباشرة
+    const imageFiles = {
+        'girl': ['g1.jpg', 'g2.jpg', 'g3.jpg', 'g4.jpg', 'g5.jpg', 'g6.jpg', 'g7.jpg', 'g8.jpg', 'g9.jpg', 'g10.jpg', 'g11.jpg', 'g12.jpg', 'g13.jpg', 'g14.jpg', 'g15.jpg', 'g16.jpg', 'g17.jpg', 'g18.jpg', 'g19.jpg', 'g20.jpg', 'g21.jpg', 'g22.jpg', 'g23.jpg', 'g24.jpg', 'g25.jpg', 'g26.jpg', 'g27.jpg'],
+        'Lesbian': ['l1.jpg', 'l2.jpg', 'l3.jpg', 'l4.jpg', 'l5.jpg', 'l6.jpg', 'l7.jpg', 'l8.jpg', 'l9.jpg', 'l10.jpg', 'l11.jpg', 'l12.jpg', 'l13.jpg', 'l14.jpg', 'l15.jpg', 'l16.jpg', 'l17.jpg', 'l18.jpg', 'l19.jpg', 'l20.jpg', 'l21.jpg', 'l22.jpg', 'l23.jpg', 'l24.jpg', 'l25.jpg', 'l26.jpg', 'l27.jpg', 'l28.jpg'],
+        'mother': ['m1.jpg', 'm2.jpg', 'm3.jpg', 'm4.jpg', 'm5.jpg', 'm6.jpg', 'm7.jpg', 'm8.jpg', 'm9.jpg', 'm10.jpg', 'm11.jpg', 'm12.jpg', 'm13.jpg', 'm14.jpg', 'm15.jpg', 'm16.jpg', 'm17.jpg', 'm18.jpg', 'm19.jpg', 'm20.jpg', 'm21.jpg', 'm22.jpg', 'm23.jpg', 'm24.jpg', 'm25.jpg', 'm26.jpg', 'm27.jpg', 'm28.jpg'],
+        'clothe': ['c1.jpg', 'c2.jpg', 'c3.jpg', 'c4.jpg', 'c5.jpg', 'c6.jpg', 'c7.jpg', 'c8.jpg', 'c9.jpg', 'c10.jpg', 'c11.jpg', 'c12.jpg', 'c13.jpg', 'c14.jpg', 'c15.jpg', 'c16.jpg', 'c17.jpg', 'c18.jpg', 'c19.jpg', 'c20.jpg', 'c21.jpg', 'c22.jpg', 'c23.jpg', 'c24.jpg', 'c25.jpg'],
+    };
+    
     const imagesContainer = document.getElementById('images-container');
+    const images = imageFiles[category] || [];
     
-    // محاولة اكتشاف الصور المتاحة
-    detectAvailableImages(category)
-        .then(images => {
-            if (images.length === 0) {
-                // إذا لم نجد أي صور، نعرض رسالة
-                imagesContainer.innerHTML = `
-                    <div class="no-images">
-                        <i class="fas fa-image"></i>
-                        <h3>لا توجد صور في هذا القسم</h3>
-                        <p>الرجاء التأكد من:</p>
-                        <ul style="text-align: right; direction: rtl;">
-                            <li>أن المجلد "${category}" موجود</li>
-                            <li>أن الصور داخل المجلد بتنسيق .jpg</li>
-                            <li>أن الصور لها أسماء صحيحة</li>
-                        </ul>
-                    </div>
-                `;
-                return;
-            }
-            
-            displayImages(category, images);
-        })
-        .catch(error => {
-            console.error('خطأ في تحميل الصور:', error);
-            
-            // محاولة استخدام النمط الافتراضي
-            const defaultImages = generateDefaultImageNames(category);
-            displayImages(category, defaultImages, true);
-        });
-}
-
-// دالة لاكتشاف الصور المتاحة
-async function detectAvailableImages(category) {
-    const images = [];
-    const prefix = imagePatterns[category] || category.charAt(0).toLowerCase();
-    
-    // نحاول تحميل مجموعة من الصور
-    for (let i = 1; i <= 50; i++) {
-        const imageName = `${prefix}${i}.jpg`;
-        const imagePath = `${category}/${imageName}`;
-        
-        // التحقق مما إذا كانت الصورة موجودة
-        const exists = await checkImageExists(imagePath);
-        if (exists) {
-            images.push(imageName);
-        } else {
-            // إذا لم نجد صورة بعد 5 محاولات فاشلة متتالية، نتوقف
-            if (i > 5 && images.length === 0) {
-                break;
-            }
-        }
-    }
-    
-    return images;
-}
-
-// دالة للتحقق من وجود صورة
-function checkImageExists(url) {
-    return new Promise((resolve) => {
-        const img = new Image();
-        img.onload = () => resolve(true);
-        img.onerror = () => resolve(false);
-        img.src = url;
-        
-        // وقت انتظار قصير
-        setTimeout(() => resolve(false), 500);
-    });
-}
-
-// إنشاء أسماء صور افتراضية
-function generateDefaultImageNames(category) {
-    const prefix = imagePatterns[category] || category.charAt(0).toLowerCase();
-    const images = [];
-    
-    // ننشئ قائمة بأسماء الصور الافتراضية
-    for (let i = 1; i <= 30; i++) {
-        images.push(`${prefix}${i}.jpg`);
-    }
-    
-    return images;
-}
-
-// دالة لعرض الصور
-function displayImages(category, imageNames, isFallback = false) {
-    const imagesContainer = document.getElementById('images-container');
-    const imageCount = document.getElementById('image-count');
-    
-    if (imageNames.length === 0) {
+    // إذا لم توجد صور
+    if (images.length === 0) {
         imagesContainer.innerHTML = `
             <div class="no-images">
                 <i class="fas fa-image"></i>
                 <h3>لا توجد صور في هذا القسم</h3>
+                <p>قم بإضافة صور إلى مجلد ${category}/</p>
             </div>
         `;
-        if (imageCount) imageCount.textContent = '0';
         return;
     }
     
+    // عرض الصور
     let html = '<div class="images-grid">';
     
-    imageNames.forEach((imageName, index) => {
-        const imagePath = `${category}/${imageName}`;
-        const imageNumber = isFallback ? index + 1 : parseInt(imageName.match(/\d+/)?.[0]) || index + 1;
+    images.forEach((image, index) => {
+        // المسار النسبي للصورة - الآن من المجلد المباشر
+        const imagePath = `${category}/${image}`;
         
         html += `
             <div class="image-item">
-                <img 
-                    src="${imagePath}" 
-                    alt="صورة ${category} ${imageNumber}" 
-                    loading="lazy"
-                    onerror="this.onerror=null; this.src='https://via.placeholder.com/300x400/333/fff?text=${category}+${imageNumber}';"
-                >
-                ${isFallback ? `<div class="image-number">${imageNumber}</div>` : ''}
+                <img src="${imagePath}" alt="صورة ${index + 1}" 
+                     onerror="handleImageError(this, '${category}', '${image}')">
             </div>
         `;
     });
@@ -167,49 +72,59 @@ function displayImages(category, imageNames, isFallback = false) {
     html += '</div>';
     imagesContainer.innerHTML = html;
     
+    // تحديث عدد الصور
+    const imageCount = document.getElementById('image-count');
     if (imageCount) {
-        imageCount.textContent = imageNames.length;
-    }
-    
-    // إضافة رسالة إذا كنا نستخدم الصور الافتراضية
-    if (isFallback) {
-        const warning = document.createElement('div');
-        warning.className = 'images-warning';
-        warning.innerHTML = `
-            <div style="background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; margin: 10px 0; border-radius: 5px;">
-                <i class="fas fa-exclamation-triangle"></i>
-                <strong>ملاحظة:</strong> يتم عرض صور افتراضية. تأكد من وجود الصور الحقيقية في مجلد "${category}/"
-            </div>
-        `;
-        imagesContainer.insertBefore(warning, imagesContainer.firstChild);
+        imageCount.textContent = images.length;
     }
 }
 
-// إضافة CSS إضافي
-const additionalStyles = `
-    .image-item {
-        position: relative;
-    }
+// دالة لمعالجة أخطاء تحميل الصور
+function handleImageError(imgElement, category, imageName) {
+    console.error(`تعذر تحميل الصورة: ${category}/${imageName}`);
     
-    .image-number {
+    // عرض صورة بديلة
+    imgElement.src = 'https://via.placeholder.com/300x400/333/fff?text=صورة+غير+موجودة';
+    imgElement.style.opacity = '0.7';
+    
+    // إضافة رسالة خطأ صغيرة
+    const parentDiv = imgElement.parentElement;
+    const errorMsg = document.createElement('div');
+    errorMsg.className = 'image-error';
+    errorMsg.textContent = 'الصورة غير متوفرة';
+    errorMsg.style.cssText = `
         position: absolute;
-        top: 5px;
-        right: 5px;
+        bottom: 5px;
+        left: 0;
+        right: 0;
         background: rgba(0,0,0,0.7);
         color: white;
-        padding: 2px 8px;
-        border-radius: 10px;
-        font-size: 12px;
-    }
-    
-    .images-warning {
+        padding: 3px;
+        font-size: 11px;
         text-align: center;
-        direction: rtl;
-    }
-`;
+        border-radius: 3px;
+    `;
+    parentDiv.style.position = 'relative';
+    parentDiv.appendChild(errorMsg);
+}
 
-// إضافة الأنماط إلى الصفحة
-const styleSheet = document.createElement("style");
-styleSheet.textContent = additionalStyles;
-
-document.head.appendChild(styleSheet);
+// دالة للتحقق من هيكل المجلدات
+function checkFolderStructure() {
+    console.log('جاري التحقق من هيكل المجلدات...');
+    
+    const folders = ['clothe', 'girl', 'Lesbian', 'mother'];
+    
+    folders.forEach(folder => {
+        console.log(`المجلد: ${folder}`);
+        
+        // تجربة تحميل صورة عشوائية للتحقق
+        const testImg = new Image();
+        testImg.onload = function() {
+            console.log(`  ✓ مجلد ${folder} موجود ويحتوي على صور`);
+        };
+        testImg.onerror = function() {
+            console.log(`  ✗ لا يمكن الوصول إلى صور في مجلد ${folder}`);
+        };
+        testImg.src = `${folder}/test.jpg`;
+    });
+}
