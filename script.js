@@ -1,10 +1,9 @@
 // أسماء الأقسام بالعربية
 const categoryNames = {
-    'nature': 'الطبيعة',
-    'people': 'الأشخاص', 
-    'animals': 'الحيوانات',
-    'food': 'الطعام',
-    'tech': 'التكنولوجيا'
+    'clothe': 'ملابس',
+    'girl': 'بنات', 
+    'mother': 'أمهات',
+    'Lesbian': 'مثليات'
 };
 
 // عند تحميل الصفحة
@@ -33,7 +32,7 @@ function loadCategoryImages() {
     }
     
     // قائمة بأسماء الصور في كل قسم (يمكنك إضافة المزيد)
-    // في الحقيقة، يجب أن تكون الصور موجودة في مجلد images/{category}/
+    // الصور موجودة في مجلدات مباشرة وليس في مجلد images/
     const imageFiles = {
         'girl': ['g1.jpg', 'g2.jpg', 'g3.jpg', 'g4.jpg', 'g5.jpg', 'g6.jpg', 'g7.jpg', 'g8.jpg', 'g9.jpg', 'g10.jpg', 'g11.jpg', 'g12.jpg', 'g13.jpg', 'g14.jpg', 'g15.jpg', 'g16.jpg', 'g17.jpg', 'g18.jpg', 'g19.jpg', 'g20.jpg', 'g21.jpg', 'g22.jpg', 'g23.jpg', 'g24.jpg', 'g25.jpg', 'g26.jpg', 'g27.jpg'],
         'Lesbian': ['l1.jpg', 'l2.jpg', 'l3.jpg', 'l4.jpg', 'l5.jpg', 'l6.jpg', 'l7.jpg', 'l8.jpg', 'l9.jpg', 'l10.jpg', 'l11.jpg', 'l12.jpg', 'l13.jpg', 'l14.jpg', 'l15.jpg', 'l16.jpg', 'l17.jpg', 'l18.jpg', 'l19.jpg', 'l20.jpg', 'l21.jpg', 'l22.jpg', 'l23.jpg', 'l24.jpg', 'l25.jpg', 'l26.jpg', 'l27.jpg', 'l28.jpg'],
@@ -50,7 +49,7 @@ function loadCategoryImages() {
             <div class="no-images">
                 <i class="fas fa-image"></i>
                 <h3>لا توجد صور في هذا القسم</h3>
-                <p>قم بإضافة صور إلى مجلد images/${category}/</p>
+                <p>قم بإضافة صور إلى مجلد ${category}/</p>
             </div>
         `;
         return;
@@ -60,8 +59,8 @@ function loadCategoryImages() {
     let html = '<div class="images-grid">';
     
     images.forEach((image, index) => {
-        // المسار النسبي للصورة
-        const imagePath = `images/${category}/${image}`;
+        // المسار النسبي للصورة - الآن من المجلد المباشر
+        const imagePath = `${category}/${image}`;
         
         html += `
             <div class="image-item">
